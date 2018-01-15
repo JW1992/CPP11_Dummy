@@ -37,5 +37,10 @@ int main(){
 	//Sort by custom ascending order object
 	std::sort(nVector.begin(), nVector.end(), IsSmaller);
 	PrintVector(nVector);
+	//Sort by custom descending order lambda expression
+	std::sort(nVector.begin(), nVector.end(), [](int a, int b){
+		return a>b;
+	});
+	PrintVector(nVector);
 	return 0;
 }
