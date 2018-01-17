@@ -52,10 +52,10 @@ int main ()
     	if(std::regex_search (line,m,rPointSouce)){
     		std::istringstream iss(line);
     		if(!(iss >> strKeyWord)) bIfInputValid = false;
-    		double x,y,z,fA;
-    		if(!(iss >> x >> y >> z >>fA)) bIfInputValid = false;
+    		double x,y,z,E,fA;
+    		if(!(iss >> x >> y >> z >> E >> fA)) bIfInputValid = false;
     		std::cout<<"Add point source, x="<<x<<", y="<<y<<", z="<<z;
-    		std::cout<<", Activity: "<<fA<<" uCi."<<std::endl;
+    		std::cout<<", Energy: " << E << " MeV" <<", Activity: "<<fA<<" uCi."<<std::endl;
     	}
     	//Input object type
     	if(std::regex_search (line,m,rCuboidObject)){
