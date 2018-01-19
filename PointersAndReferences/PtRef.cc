@@ -25,5 +25,9 @@ int main(){
 	//There can NOT be a pointer to a reference because a reference is NOT an object. There could only be a reference to a pointer!
 	int *&x5 = x2;
 	std::cout << *x5 <<std::endl;
+	
+	//Note null is an int instead of a literal. Hence pN cannot be initialized by 'null'.
+	int null=0, *pN = 0;
+	
 	return 0;
 }
