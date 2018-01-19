@@ -29,5 +29,11 @@ int main(){
 	//Note null is an int instead of a literal. Hence pN cannot be initialized by 'null'.
 	int null=0, *pN = 0;
 	
+	//Note the alias and the compound type yield surprising results. ps1 is a const pointer to char. However, ps2 is a pointer to const char.
+	//The base type in declaration of p1 is pointer to char, NOT char itself.
+	typedef char* pString;
+	pString ps1 = 0;
+	const char* ps2;
+	
 	return 0;
 }

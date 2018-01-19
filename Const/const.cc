@@ -21,5 +21,10 @@ int main(){
 	//Note the difference between a pointer to const, and a const pointer.
 	int const *cpi = &i;
 	std::cout << cf << " " << *cp << " " << *cpi << std::endl;
+	
+	//A const reference could be initialized from a literal, unlike plain ref.
+	const double& foo = 1.0;
+	std::cout << foo << std::endl;
+	
 	return 0;
 }
