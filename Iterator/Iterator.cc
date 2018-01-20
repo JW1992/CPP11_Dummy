@@ -23,8 +23,8 @@ int main(){
 	set.insert(2);
 	for(auto t= set.begin(); t!=set.end(); t++) std::cout<<*t<<std::endl;	
 	std::cout<< *std::prev(it,1) << " " << *it << " " << *std::next(it,1) <<std::endl;
-	//By default, inserted duplicate number is placed before other duplicates.
-	set.insert(2);	
+	//By default, inserted duplicate number is placed after other duplicates.
+	set.insert(3);	
 	for(auto t= set.begin(); t!=set.end(); t++) std::cout<<*t<<std::endl;
 	std::cout<< *std::prev(it,1) << " " << *it << " " << *std::next(it,1) <<std::endl;
 	//By default, all the values (2) are deleted.
