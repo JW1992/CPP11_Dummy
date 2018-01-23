@@ -7,7 +7,6 @@
 
 class Fibonacci{
 private:
-	static const int MAX_INDEX = 100;
 
 	std::vector<unsigned int> values;
 	void PreCalc();
@@ -16,9 +15,9 @@ private:
 	std::condition_variable cond_;
 	std::thread tCalc_;
 public:
+	static const int MAX_INDEX = 40;
 	Fibonacci(bool bOpt);
 	~Fibonacci(){
-		//tCalc_.interrupt();
     	tCalc_.join();
 	};
 	
@@ -29,6 +28,8 @@ public:
 Fibonacci::Fibonacci(bool bOpt){
 	values.reserve(MAX_INDEX);
 	optim = bOpt;
+	//Starting a MEMBER function in another thread
+	//Note: the called thread starts running here. join() is only telling the main function to wait for the thread to finish!
 	tCalc_ = std::thread(&Fibonacci::PreCalc, this);
 }
 
@@ -37,16 +38,15 @@ unsigned int Fibonacci::Get(unsigned int index)
     if(index < 0 || index > MAX_INDEX)
         return 0;
 
-
-    std::lock_guard<std::mutex> lock(mx_);
+	//Declare a unique_lock object and lock the mutex object.
+	//Block the thread if the lock is owned by other threads.
+    std::unique_lock<std::mutex> lock(mx_);
     while(index >= values.size())
     {
         std::cout << "Please wait ..." << std::endl;
-        cond_.wait(mx_);
+        cond_.wait(lock);
     }
     return values.at(index);
-    
-    //return GetValue(index);
 }
 
 void Fibonacci::PreCalc(){
@@ -54,10 +54,11 @@ void Fibonacci::PreCalc(){
     {
         unsigned int value = GetValue(iteration);
         
-        std::lock_guard<std::mutex> lock(mx_);
+        //Declare a unique_lock object and lock the mutex object.
+		//Block the thread if the lock is owned by other threads.
+        std::unique_lock<std::mutex> lock(mx_);
         values.push_back(value);
         cond_.notify_one();
-        
     }
 }
 
@@ -66,7 +67,7 @@ unsigned int Fibonacci::GetValue(unsigned int index)
     
     if(optim)
     {
-        std::lock_guard<std::mutex> lock(mx_);
+        std::unique_lock<std::mutex> lock(mx_);
         if(index < values.size())
             return values.at(index);
     }
@@ -86,9 +87,32 @@ unsigned int Fibonacci::GetValue(unsigned int index)
 
 int main(){
 	
+	auto start = std::chrono::high_resolution_clock::now();
+
+	Fibonacci* fib = new Fibonacci(true);
+//	std::this_thread::sleep_for(std::chrono::seconds(1));
+	std::cout << "Fibonacci of " << 40 << " is "
+            << fib->Get(40) << std::endl;
 	
-	Fibonacci fib = new Fibonacci(false);
-	std::cout<<fib.GetValue(3)<<std::endl;
+	auto finish = std::chrono::high_resolution_clock::now();
+	
+	std::chrono::duration<double> elapsed = finish - start;
+	std::cout<<"Elapsed time "<< elapsed.count() << "S" <<std::endl;
+	
+	int input;
+    while(true)
+    {
+        std::cout << "Your input [0 .. "
+            << Fibonacci::MAX_INDEX << "]: ";
+        std::cin >> input;
+        if(input < 0 || input > Fibonacci::MAX_INDEX)
+            break;
+        std::cout << "Fibonacci of " << input << " is "
+            << fib->Get(input) << std::endl;
+    }
+    std::cout << "Bye" << std::endl;
+	
+	delete fib;
 	
 	return 0;
 }
