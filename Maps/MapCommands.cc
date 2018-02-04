@@ -21,7 +21,7 @@ int main ()
 
   // second insert function version (with hint position):
   std::map<char,int>::iterator it = mymap.begin();
-  //Since C++11: Amortized constant if the insertion happens in the position just before the hint, logarithmic in the size of the container otherwise.
+  //Since C++11: Amortized constant if the insertion happens in the position just BEFORE the hint, logarithmic in the size of the container otherwise.
   mymap.insert (it, std::pair<char,int>('a',100));  // max efficiency inserting
   mymap.insert (it, std::pair<char,int>('c',400));  // no max efficiency inserting
 
