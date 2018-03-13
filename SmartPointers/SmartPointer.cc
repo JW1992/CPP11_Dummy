@@ -3,6 +3,7 @@
 #include <thread>
 #include <chrono>
 #include <mutex>
+#include <queue>
  
 struct Base
 {
@@ -33,7 +34,13 @@ void thr(std::shared_ptr<Base> p)
  
 int main()
 {
-    std::shared_ptr<Base> p = std::make_shared<Derived>();
+	std::priority_queue<std::shared_ptr<Base>> queue;
+	queue.push(std::make_shared<Derived>());
+    std::shared_ptr<Base> const& p = queue.top();
+    queue.pop();
+	//std::shared_ptr<Base> p = std::move(queue.top());
+
+    std::shared_ptr<Base> p1 = std::make_shared<Derived>();
  
     std::cout << "Created a shared Derived (as a pointer to Base)\n"
               << "  p.get() = " << p.get()
@@ -45,7 +52,7 @@ int main()
                   << ", p.use_count() = " << p.use_count() << '\n';
     
     //std::this_thread::sleep_for(std::chrono::seconds(4));
-    p.reset(); // release ownership from main
+    //p.reset(); // release ownership from main
     std::cout << "Shared ownership between 3 threads and released\n"
               << "ownership from main:\n"
               << "  p.get() = " << p.get()
@@ -53,4 +60,11 @@ int main()
     //t1.join(); t2.join(); t3.join();
     t1.join();
     std::cout << "All threads completed, the last one deleted Derived\n";
+    
+    
+    
+	std::priority_queue<std::unique_ptr<Base>> queue2;
+	queue2.push(std::unique_ptr<Derived>(new Derived()));
+    std::unique_ptr<Base> const& p2 = queue2.top();
+    queue2.pop();
 }
